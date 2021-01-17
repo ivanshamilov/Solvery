@@ -3,75 +3,90 @@ import {
     View,
     Text,
     Animated,
-    StyleSheet,
-    Dimensions
+    StyleSheet
 } from 'react-native';
 import levels from '../../store/reducers/levels';
 
 import StartButton from '../UI/StartButton';
+import Dimensions from '../../constants/Dimensions';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
-const HEADER_MAX_HEIGHT = windowHeight / 4 + 20;
-const HEADER_MIN_HEIGHT = 120;
+const HEADER_MAX_HEIGHT = Dimensions.windowHeight / 4 + 20;
+const HEADER_MIN_HEIGHT = Dimensions.windowHeight / 7;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
-const MainMenuHeader = props => {
-      const { scrollY, levels } = props;
-      const displayedLevel = levels[0];
+const get_first_untouched = levels => {
+    const untouched = levels.find(level => level.done === 0);
+    return untouched;
+};
 
-      useEffect(() => {
-        console.log('Here');
-        console.log(displayedLevel);
-      }, []);
-
-      const headerHeight = scrollY.interpolate({
-          inputRange: [0, HEADER_SCROLL_DISTANCE],
-          outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
-          extrapolate: 'clamp',
-        });
-    
-      const imageOpacity = scrollY.interpolate({
+const interpolators = {
+    headerHeight: {
+        inputRange: [0, HEADER_SCROLL_DISTANCE],
+        outputRange: [HEADER_MAX_HEIGHT, HEADER_MIN_HEIGHT],
+        extrapolate: 'clamp',
+    },
+    imageOpacity: {
         inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
         outputRange: [0.5, 0.5, 0],
         extrapolate: 'clamp',
-      });
-    
-      const textOpacity = scrollY.interpolate({
+    },
+    textOpacity: {
         inputRange: [0, HEADER_SCROLL_DISTANCE / 2, HEADER_SCROLL_DISTANCE],
         outputRange: [1, 1, 0],
         extrapolate: 'clamp',
-      });
-    
-      const imageTranslate = scrollY.interpolate({
+    },
+    imageTranslate: {
         inputRange: [0, HEADER_SCROLL_DISTANCE],
-        outputRange: [0, -50],
+        outputRange: [0, -(Dimensions.windowHeight / 12)],
         extrapolate: 'clamp',
-      });
+    },
+    textTranslate: {
+        inputRange: [0, HEADER_SCROLL_DISTANCE],
+        outputRange: [0, -(Dimensions.windowHeight / 12)],
+        extrapolate: 'clamp',
+    },
+    buttonTranslate: {
+        inputRange: [0, HEADER_SCROLL_DISTANCE],
+        outputRange: [0, -(Dimensions.windowHeight / 7.5)],
+        extrapolate: 'clamp',
+    }
+}
 
-      const textTranslate = scrollY.interpolate({
-        inputRange: [0, HEADER_SCROLL_DISTANCE],
-        outputRange: [0, -70],
-        extrapolate: 'clamp',
-      });
+const interpolateHeader = scrollY => {
+    return {
+        headerHeight: scrollY.interpolate(interpolators.headerHeight),
+        imageOpacity: scrollY.interpolate(interpolators.imageOpacity),
+        textOpacity: scrollY.interpolate(interpolators.textOpacity),
+        imageTranslate: scrollY.interpolate(interpolators.imageTranslate),
+        textTranslate: scrollY.interpolate(interpolators.textTranslate),
+        buttonTranslate: scrollY.interpolate(interpolators.buttonTranslate)
+    }
+};
 
-      const buttonTranslate = scrollY.interpolate({
-        inputRange: [0, HEADER_SCROLL_DISTANCE],
-        outputRange: [0, -110],
-        extrapolate: 'clamp',
-      });
+
+
+const MainMenuHeader = props => {
+      const { scrollY, levels } = props;
+
+      const { headerHeight, imageOpacity, textOpacity, imageTranslate, textTranslate, buttonTranslate } = interpolateHeader(scrollY);
+
+      const nextLevel = get_first_untouched(levels);
+      console.log(nextLevel.level_icon)
 
       return (
         <Animated.View style={[styles.header, {height: headerHeight}]}>
             <View style={styles.bar}>
-                <Animated.Image style={{ zIndex: -2, position: 'absolute', top: -30, left: windowWidth / 4, transform: [{translateY: imageTranslate}], opacity: imageOpacity, height: windowHeight / 3, width: windowHeight / 3}} source={displayedLevel.level_icon}/>
+                <Animated.Image
+                    style={{ zIndex: -2, position: 'absolute', top: -(Dimensions.windowHeight / 25), left: Dimensions.windowWidth / 4, transform: [{translateY: imageTranslate}], opacity: imageOpacity, height: Dimensions.windowHeight / 3, width: Dimensions.windowHeight / 3}}
+                    source={{uri: `data:image/png;base64,${nextLevel.level_icon}`}}
+                />
                 <View style={styles.textContainer}>
                     <Animated.Text style={{opacity: textOpacity, transform: [{translateY: imageTranslate}], fontFamily: 'sf-pro-display', fontSize: 17, color: 'white' }}>
                         Up Next
                     </Animated.Text>
                     <Animated.Text style={{ transform: [{translateY: textTranslate}], fontFamily: 'sf-pro-display-heavy', color: 'white', marginVertical: 10, fontSize: 27 }}>
-                        {displayedLevel.title}
+                        {nextLevel.title}
                     </Animated.Text>
                 </View>
                 <View style={styles.buttonContainer}>
@@ -94,7 +109,7 @@ const styles = StyleSheet.create({
     },
     bar: {
         flexDirection: 'row',
-        marginTop: 28,
+        marginTop: Dimensions.windowHeight / 30,
         height: HEADER_MAX_HEIGHT,
         alignItems: 'center',
         justifyContent: 'center',
@@ -112,8 +127,8 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'flex-end',
         alignItems: 'flex-end',
-        marginBottom: 80,
-        marginRight: 20
+        marginBottom: Dimensions.windowHeight / 10,
+        marginRight: Dimensions.windowWidth / 20
     }
 });
 

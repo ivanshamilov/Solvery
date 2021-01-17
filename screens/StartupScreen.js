@@ -14,22 +14,20 @@ import * as levelsActions from '../store/actions/levels';
 import Colors from '../constants/Colors';
 
 const StartupScreen = props => {
-
-
   const dispatch = useDispatch();
   const goToAuth = () => {
     props.navigation.navigate('Game');
   }
-  const loadLevels = useCallback(async () => {
-    try {
-      await dispatch(levelsActions.fetchLevels());
-    } catch (err) {
-      console.log(err);
-    }
-  }, [dispatch]);
+  // const loadLevels = useCallback(async () => {
+  //   try {
+  //     await dispatch(levelsActions.fetchLevels());
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }, [dispatch]);
 
   useEffect(() => {
-    loadLevels();
+    // loadLevels();
     setTimeout(goToAuth, 3000);
   }, []);
 

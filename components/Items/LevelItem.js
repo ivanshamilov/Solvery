@@ -46,7 +46,7 @@ const LevelItem = props => {
           <Text style={styles.title}>{itemData.item.title}</Text>
         </View>
         <View style={styles.imageContainer}>
-          <Image source={itemData.item.level_icon} style={styles.image} />
+          <Image source={{uri: `data:image/png;base64,${itemData.item.level_icon}`}} style={styles.image} />
         </View>
         <View>
           {progress}

@@ -8,7 +8,7 @@ import Level from '../models/LevelModel';
 // this.level_icon = level_icon;
 
 const DATA = [
-    new Level("1", 10, 'Addition', 'l01_1ba', ['sdfa', 'cerf'], require('../assets/images/Solvery-1.png'), 0, 10),
+    new Level("1", 10, 'Addition', 'l01_1ba', ['sdfa', 'cerf'], require('../assets/images/Solvery-1.png'), 1, 10),
     new Level("2", 10, 'Substraction', 'l01_1ba', ['sdfa', 'cerf'], require('../assets/images/Solvery-3.png'), 0, 15),
     new Level("3", 10, 'Multiplication', 'l01_1ba', ['sdfa', 'cerf'], require('../assets/images/Solvery-6.png'), 0, 10),
     new Level("4", 10, 'Division', 'l01_1ba', ['sdfa', 'cerf'], require('../assets/images/Solvery-7.png'), 0, 30),

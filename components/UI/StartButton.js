@@ -10,7 +10,7 @@ import {
 
 const StartButton = props => {
     return (
-        <TouchableOpacity onPress={() => console.log('Pressed')}>
+        <TouchableOpacity activeOpacity={0.7} onPress={() => console.log('Pressed')}>
             <Animated.View style={[props.style, styles.button]}>
                 <Text style={{ color: 'white', fontFamily: 'sf-pro-display-semibold', fontSize: 15 }}>{props.title}</Text>
             </Animated.View> 

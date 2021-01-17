@@ -7,7 +7,6 @@ import {
   ImageBackground,
   AsyncStorage,
   FlatList,
-  Dimensions,
   Image,
   Animated,
   Button
@@ -16,43 +15,42 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useDispatch, useSelector } from 'react-redux';
 import * as levelsActions from '../../store/actions/levels';
 
-import random_data from '../../data/random-data';
 import LevelList from '../../components/Items/LevelList';
 import MainMenuHeader from '../../components/Items/MainMenuHeader';
-import StartButton from '../../components/UI/StartButton';
+import Dimensions from '../../constants/Dimensions';
 import Colors from '../../constants/Colors';
 
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
-const HEADER_MAX_HEIGHT = windowHeight / 4 + 20;
+const HEADER_MAX_HEIGHT = Dimensions.windowHeight / 4 + 20;
 
 const MainMenuScreen = props => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [scrollY, setScrollY] = useState(new Animated.Value(0));
   const userLevels = useSelector(state => state.levels.userLevels);
-
   const dispatch = useDispatch();
 
   const userName = useSelector(state => state.auth.userName);
 
-  // const loadLevels = useCallback(async () => {
-  //   try {
-  //     await dispatch(levelsActions.fetchLevels());
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [dispatch, setIsLoading]);
+  const loadLevels = useCallback(async () => {
+    try {
+      await dispatch(levelsActions.fetchLevels());
+    } catch (err) {
+      console.log(err);
+    }
+  }, [dispatch, setIsLoading]);
 
-  // useEffect(() => {
-  //   setIsLoading(true);
-  //   loadLevels()
-  //     .then(() => setIsLoading(false));
-  // }, []);
+  useEffect(() => {
+      setIsLoading(true);
+      loadLevels()
+          .then(() => setIsLoading(false))
+          .catch(err => console.log(err));
+  }, [dispatch, loadLevels]);
 
 
-  if (isLoading) 
+
+
+  if (isLoading)
   {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -67,7 +65,10 @@ const MainMenuScreen = props => {
             <LevelList
               scrollViewContent={styles.scrollViewContent}
               onScroll={Animated.event(
-                [{nativeEvent: {contentOffset: {y: scrollY}}}]
+                [{nativeEvent: {contentOffset: {y: scrollY}}}],
+                  {
+                      useNativeDriver: false
+                  }
               )}
               data={userLevels} />
            <MainMenuHeader levels={userLevels} scrollY={scrollY}/>
