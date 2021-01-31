@@ -22,7 +22,7 @@ const AuthScreen = props => {
     const scrollRef = useRef();
 
     const changeModeHandler = () => {
-        const scrollControl = isLogin ? 0 : screenWidth
+        const scrollControl = isLogin ? 0 : Dimensions.windowWidth
         scrollRef.current?.scrollTo({
             x: scrollControl,
             animated: true,

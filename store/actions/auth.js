@@ -7,7 +7,7 @@ export const AUTHENTICATE = 'AUTHENTICATE';
 export const signup = (email, username, name, surname, password) => {
     // email, username, name, surname, password
     return async dispatch => {
-        const response = await fetch('https://application-pwr.herokuapp.com/auth/signup', {
+        const response = await fetch('http://192.168.0.105:8000/auth/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -24,6 +24,7 @@ export const signup = (email, username, name, surname, password) => {
             dispatch({
                 type: AUTHENTICATE,
                 token: responseData.token,
+                user: responseData.user,
                 userId: responseData.user.userId,
                 userName: responseData.user.name,
                 userSurname: responseData.user.surname
@@ -33,7 +34,7 @@ export const signup = (email, username, name, surname, password) => {
 
 export const login = (email, password) => {
     return async dispatch => {
-        const response = await fetch('https://application-pwr.herokuapp.com/auth/login', {
+        const response = await fetch('http://192.168.0.105:8000/auth/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -48,6 +49,7 @@ export const login = (email, password) => {
                 type: AUTHENTICATE,
                 token: responseData.token,
                 userId: responseData.user.userId,
+                user: responseData.user,
                 userName: responseData.user.name,
                 userSurname: responseData.user.surname
             })

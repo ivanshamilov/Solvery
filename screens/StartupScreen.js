@@ -16,7 +16,7 @@ import Colors from '../constants/Colors';
 const StartupScreen = props => {
   const dispatch = useDispatch();
   const goToAuth = () => {
-    props.navigation.navigate('Game');
+    props.navigation.navigate('Auth');
   }
   // const loadLevels = useCallback(async () => {
   //   try {

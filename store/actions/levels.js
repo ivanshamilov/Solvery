@@ -8,7 +8,7 @@ import Level from '../../models/LevelModel';
 export const fetchLevels = () => {
     return async (dispatch, getState) => {
         try {
-            const response = await fetch('http://192.168.31.206:8000/level/get_levels');
+            const response = await fetch('http://192.168.0.105:8000/level/get_levels');
             if (!response.ok) {
                 throw Error('Something went wrong');
             }

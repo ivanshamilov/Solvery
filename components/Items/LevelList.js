@@ -11,32 +11,22 @@ import {
   Dimensions,
   Image
 } from 'react-native';
-import { useDispatch } from 'react-redux';
 
 
 import LevelItem from './LevelItem';
 import * as levelsActions from '../../store/actions/levels';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-
 const LevelList = props => { 
 
-    const { data } = props;
-
-    const dispatch = useDispatch();
-
-    const selectLevelHandler = async (levelId) => {
-        try {
-            await dispatch(levelsActions.updateLevel(levelId))
-        } catch (err) {
-            console.log(err);
-        }
+    const { data, navigation } = props;
+    const selectLevelHandler = async (level) => {
+        navigation.push('Level', {
+            tasks: level.tasks
+        })
     };
 
     const renderItem = (itemData) => {
         return (
-            <LevelItem onLevelSelect={selectLevelHandler.bind(this, itemData.item.id)}  itemData={itemData} />
+            <LevelItem onLevelSelect={selectLevelHandler.bind(this, itemData.item)} itemData={itemData} />
           )
       };
 
@@ -44,7 +34,7 @@ const LevelList = props => {
         <FlatList 
             scrollEventThrottle={10}
             onScroll={props.onScroll}
-            ListHeaderComponent={() => <View style={[props.scrollViewContent]}></View>}
+            ListHeaderComponent={() => <View style={[props.scrollViewContent]}/>}
             showsVerticalScrollIndicator={false}
             style={[props.style, styles.levelList]}
             data={data}

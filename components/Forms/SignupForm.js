@@ -52,7 +52,7 @@ const formReducer = (state, action) => {
 }
 
 
-const LoginForm = props => {
+const SignupForm = props => {
     
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState(false);
@@ -234,4 +234,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LoginForm;
+export default SignupForm;

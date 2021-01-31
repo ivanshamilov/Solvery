@@ -1,14 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import {
-    View,
-    Text,
-    Animated,
-    StyleSheet
-} from 'react-native';
-import levels from '../../store/reducers/levels';
+import React, {useEffect, useState} from 'react';
+import {Animated, StyleSheet, View} from 'react-native';
 
 import StartButton from '../UI/StartButton';
 import Dimensions from '../../constants/Dimensions';
+import { showMessage } from "react-native-flash-message";
 
 
 const HEADER_MAX_HEIGHT = Dimensions.windowHeight / 4 + 20;
@@ -16,8 +11,8 @@ const HEADER_MIN_HEIGHT = Dimensions.windowHeight / 7;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
 
 const get_first_untouched = levels => {
-    const untouched = levels.find(level => level.done === 0);
-    return untouched;
+    // return levels.find(level => level.done === 0);
+    return levels[0];
 };
 
 const interpolators = {
@@ -67,19 +62,35 @@ const interpolateHeader = scrollY => {
 
 
 const MainMenuHeader = props => {
-      const { scrollY, levels } = props;
+        const { scrollY, levels, navigation } = props
+        const { headerHeight, imageOpacity, textOpacity, imageTranslate, textTranslate, buttonTranslate } = interpolateHeader(scrollY);
+        const nextLevel = get_first_untouched(levels);
+        const [isLoading, setIsLoading] = useState();
+        const [image, setImage] = useState();
 
-      const { headerHeight, imageOpacity, textOpacity, imageTranslate, textTranslate, buttonTranslate } = interpolateHeader(scrollY);
+        const loadImage = async () => {
+            setImage(`data:image/png;base64,${nextLevel.level_icon}`);
+        }
 
-      const nextLevel = get_first_untouched(levels);
-      console.log(nextLevel.level_icon)
+        useEffect(() => {
+            setIsLoading(true);
+            loadImage()
+                .then(() => setIsLoading(false))
+                .catch(err => console.log(err));
+        }, []);
+
+          const selectLevelHandler = level => {
+              navigation.push('Level', {
+                  tasks: level.tasks
+              })
+          }
 
       return (
         <Animated.View style={[styles.header, {height: headerHeight}]}>
             <View style={styles.bar}>
                 <Animated.Image
                     style={{ zIndex: -2, position: 'absolute', top: -(Dimensions.windowHeight / 25), left: Dimensions.windowWidth / 4, transform: [{translateY: imageTranslate}], opacity: imageOpacity, height: Dimensions.windowHeight / 3, width: Dimensions.windowHeight / 3}}
-                    source={{uri: `data:image/png;base64,${nextLevel.level_icon}`}}
+                    source={{uri: image}}
                 />
                 <View style={styles.textContainer}>
                     <Animated.Text style={{opacity: textOpacity, transform: [{translateY: imageTranslate}], fontFamily: 'sf-pro-display', fontSize: 17, color: 'white' }}>
@@ -90,7 +101,7 @@ const MainMenuHeader = props => {
                     </Animated.Text>
                 </View>
                 <View style={styles.buttonContainer}>
-                    <StartButton title="Start" style={{ transform: [{translateY: buttonTranslate}] }}/>
+                    <StartButton title="Start" onPress={selectLevelHandler.bind(this, nextLevel)} style={{ transform: [{translateY: buttonTranslate}] }}/>
                 </View>
             </View>
         </Animated.View>

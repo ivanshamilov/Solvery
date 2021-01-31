@@ -13,7 +13,7 @@ const ProgressBar = (props) => {
     useEffect(() => {
         Animated.timing(animatedValue, {
             toValue: reactive,
-            duration: 400,
+            duration: 500,
             useNativeDriver: true
         }).start()
     }, []);

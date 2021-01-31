@@ -5,7 +5,7 @@ import { createAppContainer,  } from 'react-navigation';
 import createAnimatedSwitchNavigator from 'react-navigation-animated-switch';
 import { createMaterialBottomTabNavigator } from 'react-navigation-material-bottom-tabs';
 import { createDrawerNavigator } from 'react-navigation-drawer';
-import { createStackNavigator } from 'react-navigation-stack';  
+import { createStackNavigator, StackViewTransitionConfigs } from 'react-navigation-stack';
 
 import { Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
@@ -18,7 +18,7 @@ import LoginScreen from '../screens/auth/LoginScreen';
 import SignupScreen from '../screens/auth/SignupScreen';
 import MainMenuScreen from '../screens/game/MainMenuScreen';
 import AuthScreen from '../screens/auth/AuthScreen';
-import ProgressBar from '../components/UI/ProgressBar';
+import LevelScreen from '../screens/game/LevelScreen';
 
 
 class TestScreen extends React.Component 
@@ -39,21 +39,50 @@ const AuthNavigator = createStackNavigator({
 }, {
     defaultNavigationOptions: {
         headerShown: false,
-    }
+    },
 })
+
+const MainMenuNavigator = createStackNavigator({
+        Main: MainMenuScreen,
+        Level: {
+            screen: LevelScreen,
+            navigationOptions: {
+                gestureEnabled: false
+            }
+        },
+    },
+    {
+        defaultNavigationOptions: {
+            headerShown: false,
+        }
+    })
+
+MainMenuNavigator.navigationOptions = ({ navigation }) => {
+    let routeName = navigation.state.routes[navigation.state.index].routeName
+
+    let tabBarVisible;
+
+    if ( routeName === 'Level' ) {
+        tabBarVisible = false
+    }
+
+    return {
+        tabBarVisible
+    };
+}
 
 const GameNavigator = createMaterialBottomTabNavigator({
     Main: {
-        screen: MainMenuScreen,
+        screen: MainMenuNavigator,
         navigationOptions: {
-            tabBarLabel: 'Quizes',
+            tabBarLabel: 'Quizzes',
             tabBarIcon: ({ tintColor }) => {
                     return (
                         <View>
                             <Ionicons style={{ color: tintColor }} size={25} name={ Platform.OS === 'android' ? 'md-color-filter' : 'ios-color-filter-outline'} />
                         </View>
                          )
-             }
+             },
         }
     },
     Test: {
@@ -96,20 +125,22 @@ const GameNavigator = createMaterialBottomTabNavigator({
         }
     }
 },
-{
+    {
     activeColor: '#7E669F',
     inactiveColor: 'rgba(128, 128, 128, 0.6)',
     barStyle: {
         height: 75,
-        backgroundColor: '#FFFFFF'
+        backgroundColor: '#FFFFFF',
+        // backgroundColor: 'red'
     },
 },
 )
 
 
 const MainNavigator = createAnimatedSwitchNavigator({
-    Startup: StartupScreen,
-    Game: GameNavigator,
+        Startup: StartupScreen,
+        Auth: AuthNavigator,
+        Game: GameNavigator,
     // Auth: AuthNavigator,
 },
 {
@@ -144,76 +175,3 @@ const MainNavigator = createAnimatedSwitchNavigator({
 
 
 export default createAppContainer(MainNavigator);
-
-
-////////////////////////////////////////////////////////////////
-
-
-
-// const TabNavigator = createMaterialBottomTabNavigator(
-//     {
-//         Home: {
-//             screen: HomeScreen,
-//             navigationOptions: {
-//                 tabBarLabel: 'Home',
-//                 tabBarIcon: ({ tintColor }) => {
-//                     return (
-//                         <View>
-//                             <Ionicons style={{ color: tintColor }} size={25} name="ios-home" />
-//                         </View>
-//                     )
-//                 }
-//             }
-//         },
-//         Profile: {
-//             screen: ProfileScreen,
-//             navigationOptions: {
-//                 tabBarLabel: 'Profile',
-//                 tabBarIcon: ({ tintColor }) => {
-//                     return (
-//                         <View>
-//                             <Ionicons style={{ color: tintColor }} size={25} name="ios-person" />
-//                         </View>
-//                     )
-//                 }
-//             }
-//         },
-//         History: {
-//             screen: HistoryScreen,
-//             navigationOptions: {
-//                 tabBarLabel: 'History',
-//                 tabBarIcon: ({ tintColor }) => {
-//                     return (
-//                         <View>
-//                             <Ionicons style={{ color: tintColor }} size={25} name="ios-images" />
-//                         </View>
-//                     )
-//                 }
-//             }
-
-//         },
-//         Cart: {
-//             screen: CartScreen,
-//             navigationOptions: {
-//                 tabBarLabel: 'Cart',
-//                 tabBarIcon: ({ tintColor }) => {
-//                     return (
-//                         <View>
-//                             <Ionicons style={{ color: tintColor }} size={25} name="ios-cart" />
-//                         </View>
-//                     )
-//                 }
-//             }
-//         },
-
-//     },
-//     {
-//         initialRoute: 'Home',
-//         activeColor: '#f0edf6',
-//         inactiveColor: '#3e2465',
-//         barStyle: {
-//             backgroundColor: '#694fad'
-//         }
-//     }
-// )
-

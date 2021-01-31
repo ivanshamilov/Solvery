@@ -16,15 +16,41 @@ import {
 import Colors from '../../constants/Colors';
 import Card from '../UI/Card';
 import ProgressBar from '../UI/ProgressBar';
-
+import { Asset } from 'expo-asset';
+import { useDispatch, useSelector } from 'react-redux';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const mapLevels = user_progress => {
+    let levels = {};
+    for (const level of user_progress)
+    {
+        levels[level.level_id] = level.qty_completed_tasks;
+    }
+    return levels;
+}
+
 const LevelItem = props => {
 
     const { itemData, onLevelSelect } = props;
-    
+    const [isLoading, setIsLoading] = useState(false);
+    const [image, setImage] = useState();
+    const user = useSelector(state => state.auth.user);
+
+    const loadImage = async () => {
+        setImage(`data:image/png;base64,${itemData.item.level_icon}`);
+    }
+
+    const user_progress = mapLevels(user.user_progress);
+
+    useEffect(() => {
+        setIsLoading(true);
+        loadImage()
+            .then(() => setIsLoading(false))
+            .catch(err => console.log(err));
+    }, []);
+    // <Image source={{uri: `data:image/png;base64,${itemData.item.level_icon}`}} style={styles.image} />
 
     const progress = itemData.item.done >= itemData.item.total ? (
       <View style={styles.completedContainer}>
@@ -34,19 +60,24 @@ const LevelItem = props => {
     :
     (
       <View style={styles.progressContainer}>
-        <Text style={styles.progressBarText}>{itemData.item.done} out of {itemData.item.total}</Text>
-        <ProgressBar step={itemData.item.done} steps={itemData.item.total} height={10} fill="#CED0F2" bgColor="#4E3473" />
+        <Text style={styles.progressBarText}>{user_progress[itemData.item._id]} out of {itemData.item.tasks.length}</Text>
+        <ProgressBar step={0} steps={itemData.item.total} height={10} fill="#CED0F2" bgColor="#4E3473" />
       </View>
     )
     return (
       <TouchableOpacity activeOpacity={0.8} onPress={onLevelSelect}>
-    
         <Card style={[styles.levelContainer, props.blocked ? styles.blocked : '' ]}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{itemData.item.title}</Text>
         </View>
         <View style={styles.imageContainer}>
-          <Image source={{uri: `data:image/png;base64,${itemData.item.level_icon}`}} style={styles.image} />
+            {
+                isLoading
+                ?
+                    <ActivityIndicator color={Colors.primaryColor}/>
+                :
+                    <Image source={{uri: image}} style={styles.image} />
+            }
         </View>
         <View>
           {progress}

@@ -30,7 +30,7 @@ const MainMenuScreen = props => {
   const userLevels = useSelector(state => state.levels.userLevels);
   const dispatch = useDispatch();
 
-  const userName = useSelector(state => state.auth.userName);
+  const user = useSelector(state => state.auth.user);
 
   const loadLevels = useCallback(async () => {
     try {
@@ -49,7 +49,6 @@ const MainMenuScreen = props => {
 
 
 
-
   if (isLoading)
   {
     return (
@@ -63,6 +62,8 @@ const MainMenuScreen = props => {
     <LinearGradient style={styles.gradient} colors={["#CED0F2", "#F2BFAC"]}>
       <View style={styles.screen}>
             <LevelList
+
+              navigation={props.navigation}
               scrollViewContent={styles.scrollViewContent}
               onScroll={Animated.event(
                 [{nativeEvent: {contentOffset: {y: scrollY}}}],
@@ -71,7 +72,7 @@ const MainMenuScreen = props => {
                   }
               )}
               data={userLevels} />
-           <MainMenuHeader levels={userLevels} scrollY={scrollY}/>
+           <MainMenuHeader navigation={props.navigation} levels={userLevels} scrollY={scrollY}/>
       </View>
      </LinearGradient>
   );

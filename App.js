@@ -12,6 +12,7 @@ import AppNavigator from './navigation/AppNavigator';
 import HorizontalScrollView from './components/UI/HorizontalScrollView';
 import authReducer from './store/reducers/auth';
 import levelsReducer from './store/reducers/levels';
+import FlashMessage from "react-native-flash-message";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -29,6 +30,7 @@ const _fetchResourcesAsync = async () => {
     'nunito-sans-light': require('./assets/fonts/NunitoSans-Light.ttf'),
     'nunito-sans-bold': require('./assets/fonts/NunitoSans-Bold.ttf'),
     'nunito-sans-extralight': require('./assets/fonts/NunitoSans-ExtraLight.ttf'),
+    'nunito-sans-extrabold': require('./assets/fonts/NunitoSans-ExtraBold.ttf'),
   });
   const images = await Asset.loadAsync(require('./assets/images/Solvery.png'));
   return Promise.all({
@@ -36,6 +38,11 @@ const _fetchResourcesAsync = async () => {
     images: images
   })
 }
+
+
+// Ivan Shamilov, 251512: Zrobił wszystko (backend + frontend)
+// Maksym Melnychenko, 251519: Zrobił kilka pytań
+// Artem Kucheriavyi, 251520: Nie zrobił nic
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);
@@ -53,6 +60,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <AppNavigator />
+      <FlashMessage />
     </Provider>
   );
 }
