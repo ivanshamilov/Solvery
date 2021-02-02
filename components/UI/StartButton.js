@@ -1,22 +1,22 @@
 import React from 'react';
 import {
-    View,
     Text,
     TouchableOpacity,
     StyleSheet,
     Animated
 } from 'react-native';
+import Colors from "../../constants/Colors";
 
 
 const StartButton = props => {
-    const { disabled, onSelectAnswer } = props;
+    const { disabled, disabledHeader } = props;
 
 
     return (
-        <TouchableOpacity activeOpacity={0.7} disabled={disabled} onPress={props.onPress}>
-            <Animated.View style={[styles.button, props.style, disabled ? styles.disabled : '', props.correct ? styles.correct : '']}>
+        <TouchableOpacity activeOpacity={0.7} disabled={disabled | disabledHeader} onPress={props.onPress}>
+            <Animated.View style={[styles.button, props.style, disabled ? styles.disabled : '', disabledHeader ? styles.disabledHeader : '', props.correct ? styles.correct : '']}>
                 <Text style={{ color: 'white', fontFamily: 'sf-pro-display-semibold', fontSize: 15 }}>{props.title}</Text>
-            </Animated.View> 
+            </Animated.View>
         </TouchableOpacity>
     )
 };
@@ -32,6 +32,9 @@ const styles = StyleSheet.create({
     },
     disabled: {
         backgroundColor: 'rgba(116, 87, 156, 0.4)'
+    },
+    disabledHeader: {
+        backgroundColor: Colors.accentColor
     },
     correct: {
         backgroundColor: 'green'

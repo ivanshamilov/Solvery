@@ -1,19 +1,12 @@
-import React, { useState, useEffect, useReducer, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
     View,
     Text,
-    Button,
-    ImageBackground,
     StyleSheet,
-    Platform,
-    TouchableOpacity
 } from "react-native";
-import { Ionicons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
-import { showMessage, hideMessage } from "react-native-flash-message";
+import { showMessage } from "react-native-flash-message";
 
 import Dimensions from '../../constants/Dimensions';
-import ProgressBar from "../UI/ProgressBar";
 import AnswerItem from "../UI/AnswerItem";
 import StartButton from "../UI/StartButton";
 import Colors from "../../constants/Colors";
@@ -22,8 +15,8 @@ import Colors from "../../constants/Colors";
 
 
 const TaskItem = props => {
-    const { task, onChangeTask, onUpdateProgress, curr_progress, onLevelEnding, current_task, task_qty } = props;
-    const { task_title, title, answer, answer_options } = task;
+    const { task, onChangeTask, onUpdateProgress, curr_progress, current_task, task_qty } = props;
+    const { task_title, answer, answer_options } = task;
     const [chosenAnswer, setChosenAnswer] = useState(null);
     const [progress, setProgress] = useState(curr_progress);
     const buttonDisabled = !chosenAnswer;
@@ -108,14 +101,9 @@ const TaskItem = props => {
                     <Text style={styles.taskTitle}>
                         {task.task}
                     </Text>
-                    {answer_options.map((option, index) => <AnswerItem isFinished={isFinished} id={`option${index}`} chosenAnswer={chosenAnswer} onChange={answerItemChange} option={answer_options[index]} />)}
+                    {answer_options.map((option, index) => <AnswerItem key={option._id} isFinished={isFinished} id={`option${index}`} chosenAnswer={chosenAnswer} onChange={answerItemChange} option={answer_options[index]} />)}
                 </View>
                 <View style={styles.buttonContainer}>
-                    <TouchableOpacity onPress={() => {
-
-                    }}>
-                        <Text>Open my notes</Text>
-                    </TouchableOpacity>
                     <StartButton
                         onPress={isFinished.finished ? onChangeTask : selectAnswerHandler}
                         disabled={buttonDisabled}

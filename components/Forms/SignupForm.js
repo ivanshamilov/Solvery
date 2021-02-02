@@ -2,28 +2,22 @@ import React, { useReducer, useCallback, useState, useEffect } from 'react';
 import {
     View,
     Text,
-    ScrollView,
-    Button,
     Alert,
     StyleSheet,
     KeyboardAvoidingView,
-    SafeAreaView,
     TouchableOpacity,
-    Dimensions
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import { Ionicons } from '@expo/vector-icons';
+import * as authActions from '../../store/actions/auth';
+import Dimensions from "../../constants/Dimensions";
+
 import Input from '../UI/Input';
 import CustomButton from '../UI/Button';
 import Colors from '../../constants/Colors';
 
-import * as authActions from '../../store/actions/auth';
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 
 const formReducer = (state, action) => {
@@ -105,9 +99,6 @@ const SignupForm = props => {
      
     }
 
-    const changeModeHandler = () => {
-        props.changeMode();
-    }
 
     useEffect(() => {
         if (error) {
@@ -197,7 +188,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 45,
-        width: windowWidth / 2,
+        width: Dimensions.windowWidth / 2,
         fontFamily: 'sf-pro-display-semibold',
         color: 'white',
         letterSpacing: 0.8
@@ -210,7 +201,7 @@ const styles = StyleSheet.create({
     },
     formControl: {
         paddingTop: 120,
-        width: '100%',
+        width: Dimensions.windowWidth / 1.2,
         justifyContent: 'center',
         alignItems: 'center',
         flex: 5,

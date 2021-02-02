@@ -1,6 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState, useRef, useEffect } from 'react';
-import { Animated, StyleSheet, Text, View } from 'react-native';
+import { Animated, View } from 'react-native';
 
 const ProgressBar = (props) => {
 
@@ -13,7 +12,7 @@ const ProgressBar = (props) => {
     useEffect(() => {
         Animated.timing(animatedValue, {
             toValue: reactive,
-            duration: 500,
+            duration: 1500,
             useNativeDriver: true
         }).start()
     }, []);
@@ -50,8 +49,5 @@ const ProgressBar = (props) => {
     )
 }
 
-const styles = StyleSheet.create({
-    
-});
 
 export default ProgressBar;

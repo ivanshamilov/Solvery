@@ -1,15 +1,12 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { Provider } from 'react-redux';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
 import * as Font from 'expo-font';
-import { StyleSheet, Text, View } from 'react-native';
 import AppLoading from 'expo-app-loading';
 import ReduxThunk from 'redux-thunk';
 import { Asset } from 'expo-asset';
 
 import AppNavigator from './navigation/AppNavigator';
-import HorizontalScrollView from './components/UI/HorizontalScrollView';
 import authReducer from './store/reducers/auth';
 import levelsReducer from './store/reducers/levels';
 import FlashMessage from "react-native-flash-message";
@@ -32,17 +29,16 @@ const _fetchResourcesAsync = async () => {
     'nunito-sans-extralight': require('./assets/fonts/NunitoSans-ExtraLight.ttf'),
     'nunito-sans-extrabold': require('./assets/fonts/NunitoSans-ExtraBold.ttf'),
   });
-  const images = await Asset.loadAsync(require('./assets/images/Solvery.png'));
+  const images = await Asset.loadAsync([
+      require('./assets/images/Solvery.png'),
+      require('./assets/images/person.png')
+  ]);
   return Promise.all({
     fonts: fonts,
     images: images
   })
 }
 
-
-// Ivan Shamilov, 251512: Zrobił wszystko (backend + frontend)
-// Maksym Melnychenko, 251519: Zrobił kilka pytań
-// Artem Kucheriavyi, 251520: Nie zrobił nic
 
 export default function App() {
   const [fontLoaded, setFontLoaded] = useState(false);

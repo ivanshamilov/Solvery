@@ -4,7 +4,8 @@ import {
 } from '../actions/levels';
 
 const initialState = {
-    userLevels: []
+    userLevels: [],
+    nextLevel: undefined
 };
 
 import Level from '../../models/LevelModel';
@@ -34,7 +35,8 @@ export default (state = initialState, action) => {
               updatedUserLevels[levelIndex] = updatedLevel;
               return {
                 ...state,
-                userLevels: updatedUserLevels
+                userLevels: updatedUserLevels,
+                nextLevel: updatedUserLevels[0]
               }
         default:
             return initialState

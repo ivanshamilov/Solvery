@@ -1,8 +1,6 @@
 import React from 'react';
 import {
-    View, 
-    Button,
-    Text,
+    View,
     StyleSheet,
     TouchableOpacity,
     ActivityIndicator
@@ -12,7 +10,6 @@ import { Ionicons } from '@expo/vector-icons';
 
 
 import Colors from '../../constants/Colors';
-import LoadingSpinner from './LoadingSpinner_v1';
 
 const CustomButton = props => {
     return (

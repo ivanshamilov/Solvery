@@ -1,26 +1,20 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
-  ActivityIndicator,
   StyleSheet,
-  ImageBackground,
-  Button,
-  AsyncStorage,
-  FlatList,
-  Dimensions,
   Image,
   TouchableOpacity
 } from 'react-native';
 
-import Colors from '../../constants/Colors';
 import Card from '../UI/Card';
 import ProgressBar from '../UI/ProgressBar';
-import { Asset } from 'expo-asset';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import LoadingSpinner from "../UI/LoadingSpinner_v1";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import Dimensions from "../../constants/Dimensions";
+import Colors from '../../constants/Colors'
+
 
 const mapLevels = user_progress => {
     let levels = {};
@@ -34,15 +28,17 @@ const mapLevels = user_progress => {
 const LevelItem = props => {
 
     const { itemData, onLevelSelect } = props;
-    const [isLoading, setIsLoading] = useState(false);
-    const [image, setImage] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    const [image, setImage] = useState('');
     const user = useSelector(state => state.auth.user);
 
     const loadImage = async () => {
-        setImage(`data:image/png;base64,${itemData.item.level_icon}`);
+        const imageStr = 'data:image/png;base64,' + itemData.item.level_icon
+        setImage(imageStr);
     }
 
     const user_progress = mapLevels(user.user_progress);
+
 
     useEffect(() => {
         setIsLoading(true);
@@ -50,31 +46,43 @@ const LevelItem = props => {
             .then(() => setIsLoading(false))
             .catch(err => console.log(err));
     }, []);
-    // <Image source={{uri: `data:image/png;base64,${itemData.item.level_icon}`}} style={styles.image} />
 
-    const progress = itemData.item.done >= itemData.item.total ? (
-      <View style={styles.completedContainer}>
-        <Text style={styles.completed}>Completed</Text>
-      </View>
-    ) 
-    :
-    (
-      <View style={styles.progressContainer}>
-        <Text style={styles.progressBarText}>{user_progress[itemData.item._id]} out of {itemData.item.tasks.length}</Text>
-        <ProgressBar step={0} steps={itemData.item.total} height={10} fill="#CED0F2" bgColor="#4E3473" />
-      </View>
-    )
+    let progress;
+
+    if (itemData.item.tasks.length === 0)
+    {
+        progress = (
+            <View style={styles.completedContainer}>
+                <Text style={styles.completed}>Coming Soon!</Text>
+            </View>
+        )
+    } else if (user_progress[itemData.item._id] === itemData.item.tasks.length)
+    {
+        progress = (
+            <View style={styles.completedContainer}>
+                <Text style={styles.completed}>Completed!</Text>
+            </View>
+        )
+    } else {
+        progress = (
+            <View style={styles.progressContainer}>
+                <Text style={styles.progressBarText}>{user_progress[itemData.item._id]} out of {itemData.item.tasks.length}</Text>
+                <ProgressBar step={user_progress[itemData.item._id]} steps={itemData.item.tasks.length} height={10} fill="#CED0F2" bgColor="#4E3473" />
+            </View>
+        )
+    }
+
     return (
-      <TouchableOpacity activeOpacity={0.8} onPress={onLevelSelect}>
-        <Card style={[styles.levelContainer, props.blocked ? styles.blocked : '' ]}>
+      <TouchableOpacity disabled={itemData.item.tasks.length === 0} activeOpacity={0.8} onPress={onLevelSelect}>
+        <Card style={[styles.levelContainer, itemData.item.tasks.length === 0 ? styles.blocked : '']}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{itemData.item.title}</Text>
+          <Text style={styles.title}>{ itemData.item.tasks.length === 0 ? "Currently unavailable" : itemData.item.title}</Text>
         </View>
         <View style={styles.imageContainer}>
             {
                 isLoading
                 ?
-                    <ActivityIndicator color={Colors.primaryColor}/>
+                    <LoadingSpinner />
                 :
                     <Image source={{uri: image}} style={styles.image} />
             }
@@ -92,8 +100,8 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 15,
     marginHorizontal: 5,
-    width: windowWidth / 2 - 20,
-    height: windowHeight / 4 + 20,
+    width: Dimensions.windowWidth / 2 - 20,
+    height: Dimensions.windowHeight / 4 + 20,
     borderWidth: 2,
     borderColor: 'white',
     backgroundColor: '#7E669F',
@@ -117,9 +125,6 @@ const styles = StyleSheet.create({
     fontSize: 15, 
     color: 'white' 
   },
-  progressContainer: { 
-    // paddingBottom: 5
-  },
   titleContainer: {
     alignItems: 'center'
   },
@@ -135,11 +140,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   image: {
-    width: windowWidth / 3  , 
-    height: windowWidth / 3 
+    width: Dimensions.windowWidth / 3 ,
+    height: Dimensions.windowWidth / 3
   },
   blocked: {
-    backgroundColor: "#eee"
+      borderColor: Colors.accentColor,
   }
 });
 

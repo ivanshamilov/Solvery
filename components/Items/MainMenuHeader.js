@@ -1,19 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {Animated, StyleSheet, View} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, Animated, StyleSheet, View} from 'react-native';
 
 import StartButton from '../UI/StartButton';
 import Dimensions from '../../constants/Dimensions';
-import { showMessage } from "react-native-flash-message";
 
 
 const HEADER_MAX_HEIGHT = Dimensions.windowHeight / 4 + 20;
 const HEADER_MIN_HEIGHT = Dimensions.windowHeight / 7;
 const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-
-const get_first_untouched = levels => {
-    // return levels.find(level => level.done === 0);
-    return levels[0];
-};
 
 const interpolators = {
     headerHeight: {
@@ -60,53 +54,43 @@ const interpolateHeader = scrollY => {
 };
 
 
-
 const MainMenuHeader = props => {
-        const { scrollY, levels, navigation } = props
+        const { scrollY, navigation, level, userState } = props
         const { headerHeight, imageOpacity, textOpacity, imageTranslate, textTranslate, buttonTranslate } = interpolateHeader(scrollY);
-        const nextLevel = get_first_untouched(levels);
-        const [isLoading, setIsLoading] = useState();
-        const [image, setImage] = useState();
+        const [isLoading, setIsLoading] = useState(false);
+        const { title, isValid } = level;
 
-        const loadImage = async () => {
-            setImage(`data:image/png;base64,${nextLevel.level_icon}`);
+
+        const selectLevelHandler = level => {
+            navigation.push('Level', {
+                tasks: level.tasks,
+                userState: userState
+            })
         }
 
-        useEffect(() => {
-            setIsLoading(true);
-            loadImage()
-                .then(() => setIsLoading(false))
-                .catch(err => console.log(err));
-        }, []);
 
-          const selectLevelHandler = level => {
-              navigation.push('Level', {
-                  tasks: level.tasks
-              })
-          }
+          return (
+            <Animated.View style={[styles.header, {height: headerHeight}]}>
+                <View style={styles.bar}>
+                    <Animated.Image
+                        style={{ zIndex: -2, position: 'absolute', top: -(Dimensions.windowHeight / 25), left: Dimensions.windowWidth / 4, transform: [{translateY: imageTranslate}], opacity: imageOpacity, height: Dimensions.windowHeight / 3, width: Dimensions.windowHeight / 3}}
+                        source={{ uri: level.level_icon }}
+                    />
+                    <View style={styles.textContainer}>
+                        <Animated.Text style={{opacity: textOpacity, transform: [{translateY: imageTranslate}], fontFamily: 'sf-pro-display', fontSize: 17, color: 'white' }}>
+                            { !isValid ? '' : 'Up Next' }
+                        </Animated.Text>
+                        <Animated.Text style={{ transform: [{translateY: textTranslate}], fontFamily: 'sf-pro-display-heavy', color: 'white', marginVertical: 10, fontSize: 27 }}>
+                            {isLoading ? <ActivityIndicator /> : title}
+                        </Animated.Text>
+                    </View>
+                    <View style={styles.buttonContainer}>
+                        <StartButton disabledHeader={!isValid} title={!isValid ? 'Great Job' : 'Start'} onPress={selectLevelHandler.bind(this, level)} style={{ transform: [{translateY: buttonTranslate}] }}/>
+                    </View>
+                </View>
+            </Animated.View>
+          )
 
-      return (
-        <Animated.View style={[styles.header, {height: headerHeight}]}>
-            <View style={styles.bar}>
-                <Animated.Image
-                    style={{ zIndex: -2, position: 'absolute', top: -(Dimensions.windowHeight / 25), left: Dimensions.windowWidth / 4, transform: [{translateY: imageTranslate}], opacity: imageOpacity, height: Dimensions.windowHeight / 3, width: Dimensions.windowHeight / 3}}
-                    source={{uri: image}}
-                />
-                <View style={styles.textContainer}>
-                    <Animated.Text style={{opacity: textOpacity, transform: [{translateY: imageTranslate}], fontFamily: 'sf-pro-display', fontSize: 17, color: 'white' }}>
-                        Up Next
-                    </Animated.Text>
-                    <Animated.Text style={{ transform: [{translateY: textTranslate}], fontFamily: 'sf-pro-display-heavy', color: 'white', marginVertical: 10, fontSize: 27 }}>
-                        {nextLevel.title}
-                    </Animated.Text>
-                </View>
-                <View style={styles.buttonContainer}>
-                    <StartButton title="Start" onPress={selectLevelHandler.bind(this, nextLevel)} style={{ transform: [{translateY: buttonTranslate}] }}/>
-                </View>
-            </View>
-        </Animated.View>
-      )
-      
 };
 
 const styles = StyleSheet.create({

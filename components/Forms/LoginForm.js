@@ -2,28 +2,23 @@ import React, { useReducer, useCallback, useState, useEffect } from 'react';
 import {
     View,
     Text,
-    ScrollView,
-    Button,
     StyleSheet,
     KeyboardAvoidingView,
-    SafeAreaView,
     TouchableOpacity,
-    ActivityIndicator,
     Alert,
-    Dimensions
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 
-import Input from '../UI/Input';
-import CustomButton from '../UI/Button';
 import Colors from '../../constants/Colors';
 import * as authActions from '../../store/actions/auth';
-import LoadingSpinner from '../UI/LoadingSpinner_v1';
+
+import Input from '../UI/Input';
+import CustomButton from '../UI/Button';
+
 
 const FORM_INPUT_UPDATE = 'FORM_INPUT_UPDATE';
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+import Dimensions from "../../constants/Dimensions";
 
 const formReducer = (state, action) => {
     switch(action.type) {
@@ -156,7 +151,7 @@ const styles = StyleSheet.create({
     },
     titleText: {
         fontSize: 45,
-        width: windowWidth / 2,
+        width: Dimensions.windowWidth / 2,
         fontFamily: 'sf-pro-display-semibold',
         color: 'white',
         letterSpacing: 0.8
@@ -169,7 +164,7 @@ const styles = StyleSheet.create({
     },
     formControl: {
         paddingTop: 45,
-        width: '100%',
+        width: Dimensions.windowWidth / 1.2,
         justifyContent: 'center',
         alignItems: 'center',
         flex: 7,

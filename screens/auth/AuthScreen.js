@@ -2,13 +2,9 @@ import React, { useRef, useState } from 'react';
 
 import {
     ScrollView,
-    Text,
     View ,
-    Button,
-    TextInput,
     ImageBackground,
     StyleSheet,
-    ActivityIndicator
 } from 'react-native';
 
 

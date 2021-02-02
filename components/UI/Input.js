@@ -1,4 +1,4 @@
-import React, { useReducer, useEffect, useState }  from 'react';
+import React, { useReducer, useEffect }  from 'react';
 import { View, Text, TextInput, StyleSheet } from 'react-native';
 
 const INPUT_CHANGE = 'INPUT_CHANGE';
@@ -33,9 +33,9 @@ const Input = props => {
     
   
     const [inputState, dispatch] = useReducer(inputReducer, {
-        value: '',
-        isValid: false,
-        touched: false        
+        value: props.value ? props.value : '',
+        isValid: !!props.value,
+        touched: false
     });
 
 
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
         paddingVertical: 5,
         borderBottomColor: 'black',
         borderBottomWidth: 1,
-        width: 280,
+        width: '100%',
         zIndex: 1,
         fontSize: 18,
         fontFamily: 'nunito-sans-light',

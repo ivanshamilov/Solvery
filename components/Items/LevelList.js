@@ -1,26 +1,19 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React from 'react';
 import {
   View,
-  Text,
-  ActivityIndicator,
   StyleSheet,
-  ImageBackground,
-  Button,
-  AsyncStorage,
   FlatList,
-  Dimensions,
-  Image
 } from 'react-native';
 
-
 import LevelItem from './LevelItem';
-import * as levelsActions from '../../store/actions/levels';
-const LevelList = props => { 
 
+
+const LevelList = props => {
     const { data, navigation } = props;
     const selectLevelHandler = async (level) => {
         navigation.push('Level', {
-            tasks: level.tasks
+            tasks: level.tasks,
+            userState: props.userState
         })
     };
 
@@ -47,10 +40,7 @@ const LevelList = props => {
 
 const styles = StyleSheet.create({
     levelList: {
-        // marginTop: 200,
         paddingBottom: 50,
-        // paddingTop:    200,
-        // paddingBottom: 500,
         flex: 1,
       },
 });
